@@ -1,0 +1,97 @@
+import csv
+import json
+import openpyxl
+
+
+
+# Function to process text data (football match results)
+def process_text_data(input_file, output_file):
+    try:
+        with open(input_file, 'r') as file:
+            lines = file.readlines()
+            total_matches = len(lines)
+            home_goals = 0
+            away_goals = 0
+            for line in lines:
+                parts = line.strip().split(':')
+                scores = parts[1].strip().split('-')
+                home_goals += int(scores[0])
+                away_goals += int(scores[1])
+
+            avg_home_goals = home_goals / total_matches
+            avg_away_goals = away_goals / total_matches
+
+        with open(output_file, 'w') as file:
+            file.write(f"Total Matches: {total_matches}\n")
+            file.write(f"Average Home Goals: {avg_home_goals:.2f}\n")
+            file.write(f"Average Away Goals: {avg_away_goals:.2f}\n")
+    except FileNotFoundError:
+        print("Input file not found.")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
+# Function to process CSV data (football standings)
+def process_csv_data(input_file, output_file):
+    try:
+        with open(input_file, 'r') as file:
+            reader = csv.DictReader(file)
+            teams = list(reader)
+            teams.sort(key=lambda x: int(x['Points']), reverse=True)
+            top_teams = teams[:3]
+
+        with open(output_file, 'w') as file:
+            file.write("Top Teams:\n")
+            for team in top_teams:
+                file.write(f"{team['Team Name']}: {team['Points']} points\n")
+    except FileNotFoundError:
+        print("Input file not found.")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
+# Function to process Excel data (football player statistics)
+def process_excel_data(input_file, output_file):
+    try:
+        wb = openpyxl.load_workbook(input_file)
+        sheet = wb.active
+        total_players = sheet.max_row - 1
+        total_goals = sum([sheet.cell(row=i, column=2).value for i in range(2, sheet.max_row + 1)])
+        avg_goals_per_player = total_goals / total_players
+
+        with open(output_file, 'w') as file:
+            file.write(f"Total Players: {total_players}\n")
+            file.write(f"Total Goals Scored: {total_goals}\n")
+            file.write(f"Average Goals per Player: {avg_goals_per_player:.2f}\n")
+    except FileNotFoundError:
+        print("Input file not found.")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
+# Function to process JSON data (football schedule)
+def process_json_data(input_file, output_file):
+    try:
+        with open(input_file, 'r') as file:
+            data = json.load(file)
+            upcoming_matches = data['matches']
+
+        with open(output_file, 'w') as file:
+            file.write("Upcoming Matches:\n")
+            for match in upcoming_matches:
+                file.write(f"{match['date']} - {match['home']} vs {match['away']}\n")
+    except FileNotFoundError:
+        print("Input file not found.")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
+# Example usage
+if __name__ == "__main__":
+    input_text_file = "football_results.txt"
+    output_text_file = "football_results_insights.txt"
+    input_csv_file = "football_standings.csv"
+    output_csv_file = "football_standings_insights.txt"
+    input_excel_file = "football_players.xlsx"
+    output_excel_file = "football_players_insights.txt"
+    input_json_file = "football_schedule.json"
+    output_json_file = "football_schedule_insights.txt"
+
+    process_text_data(input_text_file, output_text_file)
+    process_csv_data(input_csv_file, output_csv_file)

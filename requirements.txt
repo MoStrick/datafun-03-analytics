@@ -1,0 +1,16 @@
+#Import Dependencies
+requests
+pandas
+beautifulsoup4
+
+#Install dependencies:
+    pip install -r requirements.txt
+
+#MollyStrickland_analytics_speeches
+## Requirements
+- requests
+- beautifulsoup4
+- nltk
+- matplotlib
+- wordcloud
+- pandas
